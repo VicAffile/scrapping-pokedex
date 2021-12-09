@@ -8,6 +8,7 @@ class Pokemon:
         self.nom_fr = ""
         self.nom_jap = ""
         self.type = []
+        self.categorie = ""
         self.nom_preevolution = ""
         self.nom_evolution = []
         self.condition_evolution = []
@@ -19,6 +20,7 @@ class Pokemon:
         self.obtenir_numero(pokepedia)
         self.obtenir_nom_fr(pokepedia)
         self.obtenir_nom_jap(pokepedia)
+        self.obtenir_categorie(pokepedia)
         self.obtenir_type(pokepedia)
         self.obtenir_evolution(pokebip)
 
@@ -27,6 +29,7 @@ class Pokemon:
         print("Nom fr : " + self.nom_fr)
         print("Nom jap : " + self.nom_jap)
         print("Type : " + str(self.type))
+        print("Catégorie : " + self.categorie)
         print("Pré-évolution : " + self.nom_preevolution)
         print("Evolution(s) : " + str(self.nom_evolution))
         print("Condition(s) d'évolutions : " + str(self.condition_evolution))
@@ -44,6 +47,9 @@ class Pokemon:
         types = pokepedia.find_elements(By.XPATH, "//div[@id='mw-content-text']//div[@class='mw-parser-output']//table[2]//tr[7]//td//a")
         for type in types:
             self.type.append(type.get_attribute("title").split(" ")[0])
+
+    def obtenir_categorie(self, pokepedia):
+        self.categorie = pokepedia.find_element(By.XPATH, "//div[@id='mw-content-text']//div[@class='mw-parser-output']//table[2]//tr[8]//td").text
 
     def obtenir_evolution(self, pokebip):
         nombre_colonne = len(pokebip.find_elements(By.XPATH,

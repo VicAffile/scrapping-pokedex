@@ -3,7 +3,7 @@ from selenium import webdriver
 
 from classes.pokemon import Pokemon
 
-nom_pokepedia = "Salamèche"
+nom_pokepedia = "Amphinobi"
 nom_pokebip = unidecode.unidecode(nom_pokepedia.lower())
 
 pokepedia = webdriver.Chrome(executable_path="chromedriver.exe")
