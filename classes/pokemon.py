@@ -10,6 +10,8 @@ class Pokemon:
         self.type = []
         self.categorie = ""
         self.talent = []
+        self.groupe_oeuf = []
+        self.pas_eclosion = ""
         self.nom_preevolution = ""
         self.nom_evolution = []
         self.condition_evolution = []
@@ -24,6 +26,7 @@ class Pokemon:
         self.obtenir_categorie(pokepedia)
         self.obtenir_type(pokepedia)
         self.obtenir_talent(pokepedia)
+        self.obtenir_infos_oeuf(pokepedia)
         self.obtenir_evolution(pokebip)
 
     def afficher(self):
@@ -33,6 +36,8 @@ class Pokemon:
         print("Type : " + str(self.type))
         print("Catégorie : " + self.categorie)
         print("Talent : " + str(self.talent))
+        print("Groupe-oeuf : " + str(self.groupe_oeuf))
+        print("Temps éclosion : " + self.pas_eclosion)
         print("Pré-évolution : " + self.nom_preevolution)
         print("Evolution(s) : " + str(self.nom_evolution))
         print("Condition(s) d'évolutions : " + str(self.condition_evolution))
@@ -59,6 +64,12 @@ class Pokemon:
         for talent in talents:
             if talent.text != "Talent caché":
                 self.talent.append(talent.text)
+
+    def obtenir_infos_oeuf(self, pokepedia):
+        groupes_oeuf = pokepedia.find_elements(By.XPATH, "//div[@id='mw-content-text']//div[@class='mw-parser-output']//table[2]//tr[12]//td//a")
+        for groupe_oeuf in groupes_oeuf:
+            self.groupe_oeuf.append(groupe_oeuf.text)
+        self.pas_eclosion = str(pokepedia.find_element(By.XPATH, "//div[@id='mw-content-text']//div[@class='mw-parser-output']//table[2]//tr[13]//td").text)
 
     def obtenir_evolution(self, pokebip):
         nombre_colonne = len(pokebip.find_elements(By.XPATH,
