@@ -16,6 +16,8 @@ for pokemon in pokemons:
     if region != "Alolan" and region != "Galarian" and region != "Hisuian":
         liste_pokemon.append(pokemon.text)
 
+for filename in os.listdir("images/mignatures"):
+    os.remove("images/mignatures/" + filename)
 for filename in os.listdir("images/sprites"):
     os.remove("images/sprites/" + filename)
 
@@ -27,8 +29,9 @@ pokepedia.get("https://www.pokepedia.fr/" + nom_pokepedia)
 pokebip = webdriver.Chrome(executable_path="chromedriver.exe")
 pokebip.get("https://www.pokebip.com/pokedex/pokemon/" + nom_pokebip)
 
-pokemon = Pokemon(pokepedia, pokebip)
+pokemon = Pokemon(pokepedia, pokebip, annuaire)
 pokemon.afficher()
 
 pokepedia.close()
 pokebip.close()
+annuaire.close()

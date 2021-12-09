@@ -5,10 +5,11 @@ from selenium.webdriver.common.by import By
 
 class Pokemon:
 
-    def __init__(self, pokepedia, pokebip):
+    def __init__(self, pokepedia, pokebip, annuaire):
         self.numero = 0
         self.nom_fr = ""
         self.nom_jap = ""
+        self.mignature = ""
         self.sprite = ""
         self.type = []
         self.categorie = ""
@@ -20,13 +21,14 @@ class Pokemon:
         self.condition_evolution = []
         self.description = ""
 
-        self.scrapping(pokepedia, pokebip)
+        self.scrapping(pokepedia, pokebip, annuaire)
 
 
-    def scrapping(self, pokepedia, pokebip):
+    def scrapping(self, pokepedia, pokebip, annuaire):
         self.obtenir_numero(pokepedia)
         self.obtenir_nom_fr(pokepedia)
         self.obtenir_nom_jap(pokepedia)
+        self.obtenir_mignature(annuaire)
         self.obtenir_sprite(pokebip)
         self.obtenir_categorie(pokepedia)
         self.obtenir_type(pokepedia)
@@ -39,6 +41,7 @@ class Pokemon:
         print("Numéro : n°" + str(self.numero))
         print("Nom fr : " + self.nom_fr)
         print("Nom jap : " + self.nom_jap)
+        print("Mignature : " + self.mignature)
         print("Sprite : " + self.sprite)
         print("Type : " + str(self.type))
         print("Catégorie : " + self.categorie)
@@ -58,6 +61,15 @@ class Pokemon:
 
     def obtenir_nom_jap(self, pokepedia):
         self.nom_jap = pokepedia.find_element(By.XPATH, "//span[@title='Nom déposé officiel']//i").text
+
+    def obtenir_mignature(self, annuaire):
+        url_mignature = annuaire.find_elements(By.XPATH, "//table[@class='tableaustandard sortable entetefixe jquery-tablesorter' or @class='tableaustandard centre sortable entetefixe jquery-tablesorter']//tbody//tr//td[2]//img[1]")
+        url_mignature = url_mignature[int(self.numero) - 1].get_attribute("src")
+        nom_url_original = str(url_mignature.split("/")[len(url_mignature.split("/")) - 1])
+        nom_url_reformater = "mignature_" + str(self.numero) + ".png"
+        wget.download(url_mignature, out="images/mignatures")
+        os.rename(os.path.join("images/mignatures", nom_url_original), os.path.join("images/mignatures", nom_url_reformater))
+        self.mignature = "/images/mignatures/" + nom_url_reformater
 
     def obtenir_sprite(self, pokebip):
         url_sprite = pokebip.find_element(By.XPATH, "//div[@id='section-main']//div[@class='text-center']//img").get_attribute("src")
