@@ -9,6 +9,7 @@ class Pokemon:
         self.nom_jap = ""
         self.type = []
         self.categorie = ""
+        self.talent = []
         self.nom_preevolution = ""
         self.nom_evolution = []
         self.condition_evolution = []
@@ -22,6 +23,7 @@ class Pokemon:
         self.obtenir_nom_jap(pokepedia)
         self.obtenir_categorie(pokepedia)
         self.obtenir_type(pokepedia)
+        self.obtenir_talent(pokepedia)
         self.obtenir_evolution(pokebip)
 
     def afficher(self):
@@ -30,6 +32,7 @@ class Pokemon:
         print("Nom jap : " + self.nom_jap)
         print("Type : " + str(self.type))
         print("Catégorie : " + self.categorie)
+        print("Talent : " + str(self.talent))
         print("Pré-évolution : " + self.nom_preevolution)
         print("Evolution(s) : " + str(self.nom_evolution))
         print("Condition(s) d'évolutions : " + str(self.condition_evolution))
@@ -50,6 +53,12 @@ class Pokemon:
 
     def obtenir_categorie(self, pokepedia):
         self.categorie = pokepedia.find_element(By.XPATH, "//div[@id='mw-content-text']//div[@class='mw-parser-output']//table[2]//tr[8]//td").text
+
+    def obtenir_talent(self, pokepedia):
+        talents = pokepedia.find_elements(By.XPATH, "//div[@id='mw-content-text']//div[@class='mw-parser-output']//table[2]//tr[11]//td//a")
+        for talent in talents:
+            if talent.text != "Talent caché":
+                self.talent.append(talent.text)
 
     def obtenir_evolution(self, pokebip):
         nombre_colonne = len(pokebip.find_elements(By.XPATH,
