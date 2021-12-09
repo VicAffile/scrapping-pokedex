@@ -1,3 +1,5 @@
+import os
+import wget as wget
 from selenium.webdriver.common.by import By
 
 
@@ -7,6 +9,7 @@ class Pokemon:
         self.numero = 0
         self.nom_fr = ""
         self.nom_jap = ""
+        self.sprite = ""
         self.type = []
         self.categorie = ""
         self.talent = []
@@ -15,6 +18,7 @@ class Pokemon:
         self.nom_preevolution = ""
         self.nom_evolution = []
         self.condition_evolution = []
+        self.description = ""
 
         self.scrapping(pokepedia, pokebip)
 
@@ -23,16 +27,19 @@ class Pokemon:
         self.obtenir_numero(pokepedia)
         self.obtenir_nom_fr(pokepedia)
         self.obtenir_nom_jap(pokepedia)
+        self.obtenir_sprite(pokebip)
         self.obtenir_categorie(pokepedia)
         self.obtenir_type(pokepedia)
         self.obtenir_talent(pokepedia)
         self.obtenir_infos_oeuf(pokepedia)
         self.obtenir_evolution(pokebip)
+        self.obtenir_description(pokebip)
 
     def afficher(self):
         print("Numéro : n°" + str(self.numero))
         print("Nom fr : " + self.nom_fr)
         print("Nom jap : " + self.nom_jap)
+        print("Sprite : " + self.sprite)
         print("Type : " + str(self.type))
         print("Catégorie : " + self.categorie)
         print("Talent : " + str(self.talent))
@@ -41,6 +48,7 @@ class Pokemon:
         print("Pré-évolution : " + self.nom_preevolution)
         print("Evolution(s) : " + str(self.nom_evolution))
         print("Condition(s) d'évolutions : " + str(self.condition_evolution))
+        print("Description: " + self.description)
 
     def obtenir_numero(self, pokepedia):
         self.numero = pokepedia.find_element(By.XPATH, "//div[@id='mw-content-text']//table[1]//tr[2]//td[2]").text
@@ -50,6 +58,14 @@ class Pokemon:
 
     def obtenir_nom_jap(self, pokepedia):
         self.nom_jap = pokepedia.find_element(By.XPATH, "//span[@title='Nom déposé officiel']//i").text
+
+    def obtenir_sprite(self, pokebip):
+        url_sprite = pokebip.find_element(By.XPATH, "//div[@id='section-main']//div[@class='text-center']//img").get_attribute("src")
+        nom_sprite_original = str(url_sprite.split("/")[len(url_sprite.split("/")) - 1])
+        nom_sprite_reformater = "sprite_" + str(self.numero) + ".png"
+        wget.download(url_sprite, out="images/sprites")
+        os.rename(os.path.join("images/sprites", nom_sprite_original), os.path.join("images/sprites", nom_sprite_reformater))
+        self.sprite = "/images/sprites/" + nom_sprite_reformater
 
     def obtenir_type(self, pokepedia):
         types = pokepedia.find_elements(By.XPATH, "//div[@id='mw-content-text']//div[@class='mw-parser-output']//table[2]//tr[7]//td//a")
@@ -164,3 +180,7 @@ class Pokemon:
             else:
                 espace = False
         return str("".join(condition))
+
+    def obtenir_description(self, pokebip):
+        nombre_description = len(pokebip.find_elements(By.XPATH, "//div[@id='section-descriptions']//div[@class='panel panel-info']"))
+        self.description = pokebip.execute_script("return document.getElementById('section-descriptions').getElementsByClassName('col-md-12')[0].getElementsByClassName('panel')[" + str(nombre_description - 1) + "].querySelectorAll('div')[1].textContent")
