@@ -21,16 +21,24 @@ for filename in os.listdir("images/mignatures"):
 for filename in os.listdir("images/sprites"):
     os.remove("images/sprites/" + filename)
 
-nom_pokepedia = "Amphinobi"
-nom_pokebip = unidecode.unidecode(nom_pokepedia.lower())
+liste_pokemon = ["Tortipouss", "Amphinobi", "Darkrai", "Scorvol"]
 
-pokepedia = webdriver.Chrome(executable_path="chromedriver.exe")
-pokepedia.get("https://www.pokepedia.fr/" + nom_pokepedia)
-pokebip = webdriver.Chrome(executable_path="chromedriver.exe")
-pokebip.get("https://www.pokebip.com/pokedex/pokemon/" + nom_pokebip)
+pokepedia = None
+pokebip = None
 
-pokemon = Pokemon(pokepedia, pokebip, annuaire)
-pokemon.afficher()
+for pokemon in liste_pokemon:
+
+    nom_pokepedia = pokemon
+    nom_pokebip = unidecode.unidecode(pokemon.lower())
+
+    pokepedia = webdriver.Chrome(executable_path="chromedriver.exe")
+    pokepedia.get("https://www.pokepedia.fr/" + nom_pokepedia)
+    pokebip = webdriver.Chrome(executable_path="chromedriver.exe")
+    pokebip.get("https://www.pokebip.com/pokedex/pokemon/" + nom_pokebip)
+
+    scrapp = Pokemon(pokepedia, pokebip, annuaire)
+    scrapp.afficher()
+    print(" ")
 
 pokepedia.close()
 pokebip.close()
