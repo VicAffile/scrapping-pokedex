@@ -34,15 +34,26 @@ for filename in os.listdir("images/mignatures"):
 for filename in os.listdir("images/sprites"):
     os.remove("images/sprites/" + filename)
 
-liste_pokemon = ["Tortipouss", "Amphinobi", "Darkrai", "Scorvol"]
+index = 385
+max = 394
+liste_pokemon_scrap = []
+while index < max:
+    index += 1
+    liste_pokemon_scrap.append(liste_pokemon[index])
+
 
 pokepedia = None
 pokebip = None
 
-for pokemon in liste_pokemon:
+for pokemon in liste_pokemon_scrap:
 
     nom_pokepedia = pokemon
-    nom_pokebip = unidecode.unidecode(pokemon.lower())
+    if pokemon == "Nidoran♀":
+        nom_pokebip = "nidoran-f"
+    elif pokemon == "Nidoran♂":
+        nom_pokebip = "nidoran-m"
+    else:
+        nom_pokebip = unidecode.unidecode(pokemon.lower())
 
     pokepedia = webdriver.Chrome(executable_path="chromedriver.exe")
     pokepedia.get("https://www.pokepedia.fr/" + nom_pokepedia)
