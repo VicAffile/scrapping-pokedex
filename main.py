@@ -4,6 +4,9 @@ import os
 import unidecode as unidecode
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from numpy import asarray
+from PIL import Image
+import blosc
 
 from classes.pokemon import Pokemon
 
@@ -13,7 +16,8 @@ BDD_UTILISATEUR = os.getenv('BDD_UTILISATEUR')
 BDD_MOTDEPASSE = os.getenv('BDD_MOTDEPASSE')
 
 client = pymongo.MongoClient("mongodb+srv://" + BDD_UTILISATEUR + ":" + BDD_MOTDEPASSE + "@pokemon.svi0i.mongodb.net/pokemon")
-dbname = client['pokedex']
+bdd_nom = client['pokedex']
+collection_nom = bdd_nom['pokemons']
 
 annuaire = webdriver.Chrome(executable_path="chromedriver.exe")
 annuaire.get("https://www.pokepedia.fr/Liste_des_Pok%C3%A9mon_dans_l%27ordre_du_Pok%C3%A9dex_National")
@@ -47,6 +51,23 @@ for pokemon in liste_pokemon:
 
     scrapp = Pokemon(pokepedia, pokebip, annuaire)
     scrapp.afficher()
+    pokemon = {
+        "numero": scrapp.numero,
+        "nom_fr": scrapp.nom_fr,
+        "puissance": scrapp.nom_jap,
+        "mignature": blosc.pack_array(asarray(Image.open(scrapp.mignature))),
+        "sprite": blosc.pack_array(asarray(Image.open(scrapp.sprite))),
+        "type": scrapp.type,
+        "categorie": scrapp.categorie,
+        "talent": scrapp.talent,
+        "groupe_oeuf": scrapp.groupe_oeuf,
+        "pas_eclosion": scrapp.pas_eclosion,
+        "nom_preevolution": scrapp.nom_preevolution,
+        "nom_evolution": scrapp.nom_evolution,
+        "condition_evolution": scrapp.condition_evolution,
+        "description": scrapp.description
+    }
+    collection_nom.insert_one(pokemon)
     print(" ")
 
 pokepedia.close()
