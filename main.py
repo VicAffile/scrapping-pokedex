@@ -35,7 +35,7 @@ for filename in os.listdir("images/sprites"):
     os.remove("images/sprites/" + filename)
 
 index = 385
-max = 394
+max = 397
 liste_pokemon_scrap = []
 while index < max:
     index += 1
@@ -65,7 +65,7 @@ for pokemon in liste_pokemon_scrap:
     pokemon = {
         "numero": scrapp.numero,
         "nom_fr": scrapp.nom_fr,
-        "puissance": scrapp.nom_jap,
+        "nom_jap": scrapp.nom_jap,
         "mignature": blosc.pack_array(asarray(Image.open(scrapp.mignature))),
         "sprite": blosc.pack_array(asarray(Image.open(scrapp.sprite))),
         "type": scrapp.type,
