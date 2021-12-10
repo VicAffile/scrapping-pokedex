@@ -1,3 +1,4 @@
+import pymongo
 from dotenv import load_dotenv
 import os
 import unidecode as unidecode
@@ -10,6 +11,9 @@ from classes.pokemon import Pokemon
 load_dotenv()
 BDD_UTILISATEUR = os.getenv('BDD_UTILISATEUR')
 BDD_MOTDEPASSE = os.getenv('BDD_MOTDEPASSE')
+
+client = pymongo.MongoClient("mongodb+srv://" + BDD_UTILISATEUR + ":" + BDD_MOTDEPASSE + "@pokemon.svi0i.mongodb.net/pokemon")
+dbname = client['pokedex']
 
 annuaire = webdriver.Chrome(executable_path="chromedriver.exe")
 annuaire.get("https://www.pokepedia.fr/Liste_des_Pok%C3%A9mon_dans_l%27ordre_du_Pok%C3%A9dex_National")
