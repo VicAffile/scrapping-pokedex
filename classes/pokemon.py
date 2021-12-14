@@ -69,7 +69,7 @@ class Pokemon:
         nom_url_reformater = "mignature_" + str(self.numero) + ".png"
         wget.download(url_mignature, out="images/mignatures")
         os.rename(os.path.join("images/mignatures", nom_url_original), os.path.join("images/mignatures", nom_url_reformater))
-        self.mignature = "images/mignatures/" + nom_url_reformater
+        self.mignature = nom_url_reformater
 
     def obtenir_sprite(self, pokebip):
         url_sprite = pokebip.find_element(By.XPATH, "//div[@id='section-main']//div[@class='text-center']//img").get_attribute("src")
@@ -77,7 +77,7 @@ class Pokemon:
         nom_sprite_reformater = "sprite_" + str(self.numero) + ".png"
         wget.download(url_sprite, out="images/sprites")
         os.rename(os.path.join("images/sprites", nom_sprite_original), os.path.join("images/sprites", nom_sprite_reformater))
-        self.sprite = "images/sprites/" + nom_sprite_reformater
+        self.sprite = nom_sprite_reformater
 
     def obtenir_type(self, pokepedia):
         types = pokepedia.find_elements(By.XPATH, "//div[@id='mw-content-text']//div[@class='mw-parser-output']//table[2]//tr[7]//td//a")

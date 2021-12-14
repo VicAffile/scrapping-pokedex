@@ -4,9 +4,6 @@ import os
 import unidecode as unidecode
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from numpy import asarray
-from PIL import Image
-import blosc
 
 from classes.pokemon import Pokemon
 
@@ -66,8 +63,8 @@ for pokemon in liste_pokemon_scrap:
         "numero": scrapp.numero,
         "nom_fr": scrapp.nom_fr,
         "nom_jap": scrapp.nom_jap,
-        "mignature": blosc.pack_array(asarray(Image.open(scrapp.mignature))),
-        "sprite": blosc.pack_array(asarray(Image.open(scrapp.sprite))),
+        "mignature": scrapp.mignature,
+        "sprite": scrapp.sprite,
         "type": scrapp.type,
         "categorie": scrapp.categorie,
         "talent": scrapp.talent,
