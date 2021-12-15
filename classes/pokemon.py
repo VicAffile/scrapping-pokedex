@@ -13,6 +13,8 @@ class Pokemon:
         self.sprite = ""
         self.type = []
         self.categorie = ""
+        self.taille = ""
+        self.poids = ""
         self.talent = []
         self.groupe_oeuf = []
         self.pas_eclosion = ""
@@ -30,8 +32,9 @@ class Pokemon:
         self.obtenir_nom_jap(pokepedia)
         self.obtenir_mignature(annuaire)
         self.obtenir_sprite(pokebip)
-        self.obtenir_categorie(pokepedia)
         self.obtenir_type(pokepedia)
+        self.obtenir_categorie(pokepedia)
+        self.obtenir_mensurations(pokepedia)
         self.obtenir_talent(pokepedia)
         self.obtenir_infos_oeuf(pokepedia)
         self.obtenir_evolution(pokebip)
@@ -86,6 +89,12 @@ class Pokemon:
 
     def obtenir_categorie(self, pokepedia):
         self.categorie = pokepedia.find_element(By.XPATH, "//div[@id='mw-content-text']//div[@class='mw-parser-output']//table[2]//tr[8]//td").text
+
+    def obtenir_mensurations(self, pokepedia):
+        taille = str(pokepedia.find_element(By.XPATH, "//div[@id='mw-content-text']//div[@class='mw-parser-output']//table[2]//tr[9]//td").text).split(",")
+        self.taille = taille[0] + "," + taille[1]
+        poids = str(pokepedia.find_element(By.XPATH, "//div[@id='mw-content-text']//div[@class='mw-parser-output']//table[2]//tr[10]//td").text).split(",")
+        self.poids = poids[0] + "," + poids[1]
 
     def obtenir_talent(self, pokepedia):
         talents = pokepedia.find_elements(By.XPATH, "//div[@id='mw-content-text']//div[@class='mw-parser-output']//table[2]//tr[11]//td//a")

@@ -67,6 +67,8 @@ for pokemon in liste_pokemon_scrap:
         "sprite": scrapp.sprite,
         "type": scrapp.type,
         "categorie": scrapp.categorie,
+        "taille": scrapp.taille,
+        "poids": scrapp.poids,
         "talent": scrapp.talent,
         "groupe_oeuf": scrapp.groupe_oeuf,
         "pas_eclosion": scrapp.pas_eclosion,
