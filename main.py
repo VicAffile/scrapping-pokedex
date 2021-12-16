@@ -14,25 +14,25 @@ scrapper_types = True
 
 
 load_dotenv()
-BDD_UTILISATEUR = os.getenv('BDD_UTILISATEUR')
-BDD_MOTDEPASSE = os.getenv('BDD_MOTDEPASSE')
+BDD_UTILISATEUR = os.getenv("BDD_UTILISATEUR")
+BDD_MOTDEPASSE = os.getenv("BDD_MOTDEPASSE")
 
 client = pymongo.MongoClient("mongodb+srv://" + BDD_UTILISATEUR + ":" + BDD_MOTDEPASSE + "@pokemon.svi0i.mongodb.net/pokemon")
-bdd_nom = client['pokedex']
+bdd_nom = client["pokedex"]
 
 
 if scrapper_pokemons:
-    collection_nom = bdd_nom['pokemons']
+    collection_nom = bdd_nom["pokemons"]
 
     pokemon_annuaire = webdriver.Chrome(executable_path="chromedriver.exe")
     pokemon_annuaire.get("https://www.pokepedia.fr/Liste_des_Pok%C3%A9mon_dans_l%27ordre_du_Pok%C3%A9dex_National")
 
-    liste_pokemon = []
+    liste_pokemons = []
     pokemons = pokemon_annuaire.find_elements(By.XPATH, "//table[@class='tableaustandard sortable entetefixe jquery-tablesorter' or @class='tableaustandard centre sortable entetefixe jquery-tablesorter']//tbody//tr//td[3]")
     for pokemon in pokemons:
         region = str(pokemon.text).split(" ")[0]
         if region != "Alolan" and region != "Galarian" and region != "Hisuian":
-            liste_pokemon.append(pokemon.text)
+            liste_pokemons.append(pokemon.text)
 
     for filename in os.listdir("images/mignatures"):
         os.remove("images/mignatures/" + filename)
@@ -44,7 +44,7 @@ if scrapper_pokemons:
     liste_pokemon_scrap = []
     while index < max:
         index += 1
-        liste_pokemon_scrap.append(liste_pokemon[index])
+        liste_pokemon_scrap.append(liste_pokemons[index])
 
 
     pokemon_pokepedia = None
@@ -94,8 +94,19 @@ if scrapper_pokemons:
 
 
 if scrapper_types:
+    collection_nom = bdd_nom["types"]
 
-    liste_types = ["Plante"]
+    type_annuaire = webdriver.Chrome(executable_path="chromedriver.exe")
+    type_annuaire.get("https://www.pokepedia.fr/Type")
+
+    liste_types = []
+    types = type_annuaire.find_elements(By.XPATH, "//table[@class='tableaustandard navigation']//td[@colspan='2']//a")
+    for type in types:
+        nom = type.get_attribute("title").split(" ")[0]
+        liste_types.append(nom) if nom != "Combat" and nom != "Vol" and nom != "Poison" and nom != "Ténèbres" and nom != "Fée" else liste_types.append(nom + "_(type)")
+
+    for filename in os.listdir("images/types"):
+        os.remove("images/types/" + filename)
 
     for type in liste_types:
 
@@ -104,5 +115,13 @@ if scrapper_types:
 
         scrapp = Type(type_pokepedia)
         scrapp.afficher()
+        type = {
+            "nom": scrapp.nom,
+            "image": scrapp.image
+        }
+        collection_nom.insert_one(type)
+        print(" ")
 
         type_pokepedia.close()
+
+    type_annuaire.close()

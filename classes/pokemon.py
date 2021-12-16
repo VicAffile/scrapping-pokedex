@@ -109,11 +109,8 @@ class Pokemon:
         self.pas_eclosion = str(pokepedia.find_element(By.XPATH, "//div[@id='mw-content-text']//div[@class='mw-parser-output']//table[2]//tr[13]//td").text)
 
     def obtenir_evolution(self, pokebip):
-        nombre_colonne = len(pokebip.find_elements(By.XPATH,
-                                                   "//div[@id='section-evolutions']//div[1]//div[@class='col-sm-3 col-xs-12']"))
-        nom_derniere_colonne = list(pokebip.execute_script(
-            "return document.getElementById('section-evolutions').getElementsByClassName('col-sm-3 col-xs-12')[" + str(
-                nombre_colonne - 1) + "].getElementsByClassName('panel-heading')[0].textContent"))
+        nombre_colonne = len(pokebip.find_elements(By.XPATH, "//div[@id='section-evolutions']//div[1]//div[@class='col-sm-3 col-xs-12']"))
+        nom_derniere_colonne = list(pokebip.execute_script("return document.getElementById('section-evolutions').getElementsByClassName('col-sm-3 col-xs-12')[" + str(nombre_colonne - 1) + "].getElementsByClassName('panel-heading')[0].textContent"))
         retour = []
         for lettre in nom_derniere_colonne:
             if lettre != " " and lettre != "\n":
@@ -125,20 +122,13 @@ class Pokemon:
             self.condition_evolution = ["Aucune"]
             return
         else:
-            stade_initial = pokebip.execute_script(
-                "return document.getElementById('section-evolutions').getElementsByClassName('col-sm-3 col-xs-12')[0].querySelector('ul').querySelectorAll('div')[1].querySelector('a').textContent")
-            nombre_pokemon_stade_1 = len(pokebip.find_elements(By.XPATH,
-                                                               "//div[@id='section-evolutions']//div[1]//div[@class='col-sm-3 col-xs-12'][2]//ul//li")) if nombre_colonne >= 2 else None
-            nombre_pokemon_stade_2 = len(pokebip.find_elements(By.XPATH,
-                                                               "//div[@id='section-evolutions']//div[1]//div[@class='col-sm-3 col-xs-12'][3]//ul//li")) if nombre_colonne == 3 else None
-            pokemon_stade_1 = self.obtenir_pokemon_stade(pokebip, nombre_pokemon_stade_1,
-                                                         1) if nombre_pokemon_stade_1 != None else ["Aucune"]
-            condition_stade_1 = self.obtenir_condition_stade(pokebip, nombre_pokemon_stade_1,
-                                                             1) if nombre_pokemon_stade_1 != None else ["Aucune"]
-            pokemon_stade_2 = self.obtenir_pokemon_stade(pokebip, nombre_pokemon_stade_2,
-                                                         2) if nombre_pokemon_stade_2 != None else ["Aucune"]
-            condition_stade_2 = self.obtenir_condition_stade(pokebip, nombre_pokemon_stade_2,
-                                                             2) if nombre_pokemon_stade_2 != None else ["Aucune"]
+            stade_initial = pokebip.execute_script("return document.getElementById('section-evolutions').getElementsByClassName('col-sm-3 col-xs-12')[0].querySelector('ul').querySelectorAll('div')[1].querySelector('a').textContent")
+            nombre_pokemon_stade_1 = len(pokebip.find_elements(By.XPATH, "//div[@id='section-evolutions']//div[1]//div[@class='col-sm-3 col-xs-12'][2]//ul//li")) if nombre_colonne >= 2 else None
+            nombre_pokemon_stade_2 = len(pokebip.find_elements(By.XPATH, "//div[@id='section-evolutions']//div[1]//div[@class='col-sm-3 col-xs-12'][3]//ul//li")) if nombre_colonne == 3 else None
+            pokemon_stade_1 = self.obtenir_pokemon_stade(pokebip, nombre_pokemon_stade_1, 1) if nombre_pokemon_stade_1 != None else ["Aucune"]
+            condition_stade_1 = self.obtenir_condition_stade(pokebip, nombre_pokemon_stade_1, 1) if nombre_pokemon_stade_1 != None else ["Aucune"]
+            pokemon_stade_2 = self.obtenir_pokemon_stade(pokebip, nombre_pokemon_stade_2, 2) if nombre_pokemon_stade_2 != None else ["Aucune"]
+            condition_stade_2 = self.obtenir_condition_stade(pokebip, nombre_pokemon_stade_2, 2) if nombre_pokemon_stade_2 != None else ["Aucune"]
             if self.nom_fr == stade_initial:
                 self.nom_preevolution = "Aucune"
                 self.nom_evolution = pokemon_stade_1
@@ -168,10 +158,7 @@ class Pokemon:
         pokemon = 0
         continuer = True
         while continuer:
-            pokemon_stade.append(pokebip.execute_script(
-                "return document.getElementById('section-evolutions').getElementsByClassName('col-sm-3 col-xs-12')[" + str(
-                    stade) + "].querySelector('ul').querySelectorAll('li')[" + str(
-                    pokemon) + "].querySelectorAll('div')[1].querySelector('a').textContent"))
+            pokemon_stade.append(pokebip.execute_script("return document.getElementById('section-evolutions').getElementsByClassName('col-sm-3 col-xs-12')[" + str(stade) + "].querySelector('ul').querySelectorAll('li')[" + str(pokemon) + "].querySelectorAll('div')[1].querySelector('a').textContent"))
             pokemon += 1
             if pokemon == nombre_pokemon:
                 continuer = False
@@ -182,10 +169,7 @@ class Pokemon:
         pokemon = 0
         continuer = True
         while continuer:
-            condition = self.format_condition_evolution(pokebip.execute_script(
-                "return document.getElementById('section-evolutions').getElementsByClassName('col-sm-3 col-xs-12')[" + str(
-                    stade) + "].querySelector('ul').querySelectorAll('li')[" + str(
-                    pokemon) + "].querySelectorAll('div')[1].textContent"))
+            condition = self.format_condition_evolution(pokebip.execute_script("return document.getElementById('section-evolutions').getElementsByClassName('col-sm-3 col-xs-12')[" + str(stade) + "].querySelector('ul').querySelectorAll('li')[" + str(pokemon) + "].querySelectorAll('div')[1].textContent"))
             condition_stade.append(condition)
             pokemon += 1
             if pokemon == nombre_pokemon:
