@@ -4,14 +4,17 @@ import os
 import unidecode as unidecode
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 
 from classes.pokemon import Pokemon
 from classes.type import Type
 
 
-scrapper_pokemons = False
-scrapper_types = True
+scrapper_pokemons = True
+scrapper_types = False
 
+chrome_options = Options()
+chrome_options.add_argument("--headless")
 
 load_dotenv()
 BDD_UTILISATEUR = os.getenv("BDD_UTILISATEUR")
@@ -24,7 +27,7 @@ bdd_nom = client["pokedex"]
 if scrapper_pokemons:
     collection_nom = bdd_nom["pokemons"]
 
-    pokemon_annuaire = webdriver.Chrome(executable_path="chromedriver.exe")
+    pokemon_annuaire = webdriver.Chrome(executable_path="chromedriver.exe", chrome_options=chrome_options)
     pokemon_annuaire.get("https://www.pokepedia.fr/Liste_des_Pok%C3%A9mon_dans_l%27ordre_du_Pok%C3%A9dex_National")
 
     liste_pokemons = []
@@ -39,12 +42,12 @@ if scrapper_pokemons:
     for filename in os.listdir("images/sprites"):
         os.remove("images/sprites/" + filename)
 
-    index = 385
-    max = 397
+    index = 16
+    max = 26
     liste_pokemon_scrap = []
-    while index < max:
+    while index - 1 < max:
+        liste_pokemon_scrap.append(liste_pokemons[index - 1])
         index += 1
-        liste_pokemon_scrap.append(liste_pokemons[index])
 
 
     pokemon_pokepedia = None
@@ -60,9 +63,9 @@ if scrapper_pokemons:
         else:
             nom_pokebip = unidecode.unidecode(pokemon.lower())
 
-        pokemon_pokepedia = webdriver.Chrome(executable_path="chromedriver.exe")
+        pokemon_pokepedia = webdriver.Chrome(executable_path="chromedriver.exe", chrome_options=chrome_options)
         pokemon_pokepedia.get("https://www.pokepedia.fr/" + nom_pokepedia)
-        pokemon_pokebip = webdriver.Chrome(executable_path="chromedriver.exe")
+        pokemon_pokebip = webdriver.Chrome(executable_path="chromedriver.exe", chrome_options=chrome_options)
         pokemon_pokebip.get("https://www.pokebip.com/pokedex/pokemon/" + nom_pokebip)
 
         scrapp = Pokemon(pokemon_pokepedia, pokemon_pokebip, pokemon_annuaire)
@@ -85,6 +88,8 @@ if scrapper_pokemons:
             "condition_evolution": scrapp.condition_evolution,
             "description": scrapp.description
         }
+        if collection_nom.find_one({'numero': scrapp.numero}) is not None:
+            collection_nom.delete_many({'numero': scrapp.numero})
         collection_nom.insert_one(pokemon)
         print(" ")
 
@@ -96,7 +101,7 @@ if scrapper_pokemons:
 if scrapper_types:
     collection_nom = bdd_nom["types"]
 
-    type_annuaire = webdriver.Chrome(executable_path="chromedriver.exe")
+    type_annuaire = webdriver.Chrome(executable_path="chromedriver.exe", chrome_options=chrome_options)
     type_annuaire.get("https://www.pokepedia.fr/Type")
 
     liste_types = []
@@ -110,7 +115,7 @@ if scrapper_types:
 
     for type in liste_types:
 
-        type_pokepedia = webdriver.Chrome(executable_path="chromedriver.exe")
+        type_pokepedia = webdriver.Chrome(executable_path="chromedriver.exe", chrome_options=chrome_options)
         type_pokepedia.get("https://www.pokepedia.fr/" + type)
 
         scrapp = Type(type_pokepedia)
@@ -125,3 +130,5 @@ if scrapper_types:
         type_pokepedia.close()
 
     type_annuaire.close()
+
+print("SCRAP FINI!!!")
